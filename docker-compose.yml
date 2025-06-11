@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  web:
+    build: . # Budujemy obraz z lokalnego Dockerfile
+    cotainer_name: flask-app
+    ports:
+      - "5000:5000" # Mapujemy port aplikacji na hosta
+    depends_on:
+      - mongo # Uruchom MongoDB przed aplikacją
+    volumes:
+      - .:/app # Montujemy bieżacy katalog do kontenera (live reload)
+    networks:
+      - flasknet
+
+
+  mongo:
+    image: mongo:6.0 # Używamy oficjalnego obrazu MongoDB
+    conatiner_name: mongo-db
+    ports:
+      - "27017:27017" # Udostępniamy port Mongo na hoście
+    volumes:
+      - mongo-data:/data/db # Dane Mongo zapisujemy na voluminie
+    restart: unless-stopped
+    networks:
+      - flasknet
+
+volumes:
+  mongo-data: # Definicja volume do trwałego przechowywania danych
+
+networks:
+  flasknet:
